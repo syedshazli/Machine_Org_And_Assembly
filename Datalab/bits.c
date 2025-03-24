@@ -17,7 +17,12 @@ int isTmax(int x){
   return !(xor);
 }
 
-int allOddBits(int x){}
+int allOddBits(int x){
+   int oddWord = 0x55555555; // all negative odds
+        int res = (~oddWord & x); // get the oddWord AND with X to then see if it's equal
+//      printf("my number is 0x%08X\n",x);
+        return !(res^ ~oddWord); // NOT to see if the odd word
+}
 
 int negate(int x){
   return ~x+1;
