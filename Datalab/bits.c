@@ -16,3 +16,9 @@ int isTmax(int x){
   int xor = compare ^ x;
   return !(xor);
 }
+
+int allOddBits(int x){}
+
+int negate(int x){
+  return ~x+1;
+}
