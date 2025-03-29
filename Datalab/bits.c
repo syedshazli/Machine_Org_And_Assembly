@@ -76,3 +76,44 @@ int isLessOrEqual(int x, int y) {
         //int compare = 1;
         return !checkHigh;
 }
+
+int conditional(int x, int y, int z) {
+
+        // for the conditional, it goes as follows
+        // x ? y: z
+        // if x is true, return y, else return z
+        // for x: input of 0 should return 0 and if nonzero should return 1
+
+        // can XOR x with 0, output should be 1 if x is true
+        // but then how can we determine to choose y based on this without using IF?
+        // since we cannot have control flow in this, we might have to encode the result
+        // the control flow can be used with an OR
+
+        // notice how doing a ! makes something either a 0 or 1
+        // so we can not our condition X, 0 means it's true, 1 means it's false
+        // can choose to not this again to make things more intuitive, with 1 meaning true and 0 meaning false
+
+
+        // (x & y ) | SOMETHING
+        // return x & y because if x is 0 then the output of x & y is 0.
+
+
+
+
+
+        x = !x; // x becomes either 0 or 1, 0 if true and 1 if false
+        x = !x; // flip the value again so 1 is true and 0 is false
+
+        // negate the result as seen before by doing the following
+        x = ~x+1;
+
+        // this now leaves us with all 1's or all 0's
+        // which then allows us to bitwise AND properly, instead of 000000...1 which would ruin our operations when ANDING
+//      printf("X IS %d", x);
+
+        // if x is true, it returns all 1's and with y
+        // ANDING something with all 1's gives the original number
+
+        // must be ~x, because if x was all 0's then ANDING with x would make our resulting z a 0
+        return ( x &y) | (~x & z);
+}
