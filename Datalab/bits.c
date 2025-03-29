@@ -54,3 +54,25 @@ int isAsciiDigit(int x){
         return ( (checkHigh) & checkLow ) ;
 
 }
+
+
+/*
+ * isLessOrEqual - if x <= y  then return 1, else return 0
+ *   Example: isLessOrEqual(4,5) = 1.
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 24
+ *   Rating: 3
+ */
+int isLessOrEqual(int x, int y) {
+
+        // think of this as the upper bound problem back in isASCII
+        // we have our upper bound y, and input x
+
+        // so if -y + 1+x is negative or 0, then y >= x, and return 1
+        int resHigh = ~x+1 +y;
+
+         int checkHigh = (resHigh>>31);
+
+        //int compare = 1;
+        return !checkHigh;
+}
