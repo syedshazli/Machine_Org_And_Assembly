@@ -27,3 +27,30 @@ int allOddBits(int x){
 int negate(int x){
   return ~x+1;
 }
+
+int isAsciiDigit(int x){
+ // required to compare input w/2 constraints
+        // so how can we check >= or <= without explicitly using these operators?
+        // maybe << will help, keep dropping bits and seeing if things are equal to 0 after dropping the minimum amount
+        // then dropping past the limit and seeing if things are equal to 0
+        // any 4 bits on the right is garbage for unsigned ints, what about signed ints?
+        // because of this, I suggest doing an AND with the input and the lowbound
+        // because we know if any of the two bits on the far left are 1, then it's invalid, so we AND with something which we know two left bits are off
+        // however, with an input of -13: 1111 0011 this would give a passing case when it shouldn't
+
+
+        // what about negating everything first?
+        int lowBound = 0x30;
+        int highBound = 0x39;
+        int resLow = x + ~lowBound+1;
+
+        int checkLow = !(resLow>>31);
+
+
+
+        int resHigh = x + ~highBound+1;
+        int checkHigh = (resHigh>>31) | !(resHigh);
+
+        return ( (checkHigh) & checkLow ) ;
+
+}
