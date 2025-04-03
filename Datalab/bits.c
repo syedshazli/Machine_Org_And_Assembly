@@ -117,3 +117,61 @@ int conditional(int x, int y, int z) {
         // must be ~x, because if x was all 0's then ANDING with x would make our resulting z a 0
         return ( x &y) | (~x & z);
 }
+
+
+/*
+ * isLessOrEqual - if x <= y  then return 1, else return 0
+ *   Example: isLessOrEqual(4,5) = 1.
+ *   Legal ops: ! ~ & ^ | + << >>
+ *   Max ops: 24
+ *   Rating: 3
+ */
+int isLessOrEqual(int x, int y) {
+
+        // think of this as the upper bound problem back in isASCII
+        // we have our upper bound y, and input x
+        // if we negate our X and add it to Y, the result should be positive or 0
+        // if 0, the leading bit will be 0 and if it's a nonzero positive int, the leading bit will be 0                                                        // so extract this leading bit and return !(leadingBit)
+                                                                            
+
+        // so if -x + 1+y is positive, then y >= x, and return 1
+        int resHigh = ~x+1 +y;
+
+        // if 0 --> leading bit is 0, so result is positive
+        int checkHigh = (resHigh>>31);
+
+        // !(positive result) returns 1
+        return !checkHigh;
+}
+
+//4
+/*
+ * logicalNeg - implement the ! operator, using all of
+ *              the legal operators except !
+ *   Examples: logicalNeg(3) = 0, logicalNeg(0) = 1
+ *   Legal ops: ~ & ^ | + << >>
+ *   Max ops: 12
+ *   Rating: 4
+ */
+int logicalNeg(int x) {
+        // the ! operator sets any number NOT 0 to 1, and if given 0 outputs a 1
+        // this sounds like a conditional that we mentioned earlier
+        // the issue is that in our conditional, we used the ! operator...
+        // notice that if we invert all bits and add 1, if the number is 0, it stays zero, otherwise, we get the negative of that number
+        // the leading bit will also be set if we XOR the input with the inverse
+        // but this will not work for the most negative number since inverting the most negative number gets the same number (due to addition overflow)
+
+        int minusX = ~x + 1; // invert all bits, if we invert 0 it stays 0  
+                                                                                    int allBits  = (x ^ minusX); // leading bit is 1 for non negative numbers except for max negative                                               
+        int checkNegX = x >> 31; // 1 if number is negative
+
+        // check below!!! Doesnt Work!! Must extract stuff!!!
+        int checkNonZero =  (allBits>>31|checkNegX) + 1 & 1; // 1 if number is zero, 0 otherwise
+
+
+        return checkNonZero;
+
+
+
+}
+
