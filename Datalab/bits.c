@@ -175,3 +175,76 @@ int logicalNeg(int x) {
 
 }
 
+int howManyBits(int x) {
+
+        // example: 00...1100
+        // count number of significant bits
+        // trailing zeroes matter, leading zeroes don't EXCEPT for sign bit
+        // the 1100 needs to stay
+        // so we need 4 bits + 1 bit (sign bit) = 5 bits to rep 1100 in twos comp
+        // if we have a negative number, and have to flip everything and add 1, we look for the zeroes
+        // so for a large neg number, 111.....1011, we care about 011
+        // this is 3 bits, accounting for sign bits means we only need 4 bits
+
+        // for pos numbers, check left half and see if there's 1's
+        // toss out bits on the right if found
+        // toss out left half if not found
+        // keep track of how many bits we toss out, add the sign bit to the total at the end
+
+
+        // because we need to split in half, we shift by <<2
+        // repeat for all other denominations
+
+
+        int b16, b8, b4, b2, b1, sign;
+        int b16, b8, b4, b2, b1, sign;
+        // step 1: convert possibly negative number to an equivalent positive
+        sign  = x>>31;
+        x = (sign & ~x) | (~sign & x);
+
+        // process 16 bit halves case, mult by 2^4, means we need 16 bits, otherwise the number is 0 and we ad 0 bits
+         b16 = !!(x>>16) <<4;
+        x = x>>b16;
+
+         b8  = !!(x>>8)<<3;
+        x>>=b8;
+
+
+         b4 = !!(x>>4)<<2;
+        x>>= b4;
+
+
+         b2 = !!(x>>2)<<1;
+        x >>=b2;
+
+         b1 = !!(x>>1);
+        x >>= b1;
+
+
+        return b16 + b8 + b4 + b2 + b1 + x + 1;
+
+}
+
+
+unsigned floatNegate(unsigned uf) {
+
+// separate out exponent
+// exponent is 8 bits of the float
+// get rid of the 23 bit mantissa
+
+int exp = (uf>>23) & 0xFF; // allows us to keep first 8 bits
+
+// if number is nan
+
+// 8 bits of 1's and mantissa is nonzero
+if(exp == 0xFF && (uf << 9) != 0 ){
+
+// changes sign bit and negates the rest
+return uf;
+}
+
+// number is not nan, negate float
+// if sign bit is active is 0, turn it to 1, and likewise for active 1
+return uf ^ (1<<31);
+
+}
