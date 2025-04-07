@@ -225,6 +225,141 @@ int howManyBits(int x) {
 
 }
 
+//float
+/* 
+ * floatScale2 - Return bit-level equivalent of expression 2*f for
+ *   floating point argument f.
+ *   Both the argument and result are passed as unsigned int's, but
+ *   they are to be interpreted as the bit-level representation of
+ *   single-precision floating point values.
+ *   When argument is NaN, return argument
+ *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
+ *   Max ops: 30
+ *   Rating: 4
+ */
+unsigned floatScale2(unsigned uf) {
+
+	
+	// TA went over extracting components of floating points in class
+	// if exponent is 255, return input
+
+	// also note if exponent bits are off, to mult by 2, we can shit fraction bit to the left by multiplying by 2
+	// otherwise, we increment exponent by 1
+
+
+	unsigned signBit = uf>>31; // leading bit, 1 for neg, 0 for pos
+	unsigned expBits = (uf>>23) & 0xFF;
+	unsigned mantissa = uf & 0x7FFFFF;
+
+
+	if(expBits == 0){
+		
+	// denormalized/0 case, can just shift fraction bits by 1
+	
+	mantissa = mantissa <<1; // double mantissa
+	
+	
+
+	// after doubling mantissa, check if fraction bits overflowed
+	// enters this case if frac == 0x80000000
+	if(mantissa & 0x800000){
+	
+		mantissa = mantissa & 0x7FFFFF; // remove bit that overflowed via bit mask
+		expBits = 1; // set exponent to 1 due to overflow
+	}
+	
+
+	}
+  
+
+	else if(expBits < 255){
+	
+	expBits += 1; // incrementing exponent by 1 == doubling the num 
+	
+	
+	if(expBits == 255){
+		mantissa = 0;
+	}
+
+
+
+	}
+	
+
+
+	return (signBit <<31) | (expBits<<23) | mantissa;
+
+}
+/* 
+ * floatFloat2Int - Return bit-level equivalent of expression (int) f
+ *   for floating point argument f.
+ *   Argument is passed as unsigned int, but
+ *   it is to be interpreted as the bit-level representation of a
+ *   single-precision floating point value.
+ *   Anything out of range (including NaN and infinity) should return
+ *   0x80000000u.
+ *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
+ *   Max ops: 30
+ *   Rating: 4
+ */
+int floatFloat2Int(unsigned uf) {
+	// after being stuck for a while, looked at hints in piazza
+	// came up with an algorithm as follow
+	// extract components as done previously (sign bit, exponents, mantissa)
+	// for values too large, return 0x80000000, and 0 for small nums
+	// all other values, combine leading 1 with feaction, shift value left or right based on exponent
+	// apply sign bit to result, w/range checking for neg numbers
+	// make sure results aren't too big or too negative
+
+  unsigned sign = uf>>31;
+  unsigned exp = (uf >> 23) & 0xFF; // get exponent bits
+  unsigned exp_min_norm = 127; // bias for 32 bits
+  unsigned exp_max_norm = 158; // max exponent fitting in int range
+
+ unsigned frac = uf & 0x7FFFFF; // take fraction field
+ unsigned e_pow_2;
+  unsigned val; 
+
+	// if true, value too small, as abs val of float is < 1.0
+  	if(exp < exp_min_norm){
+		return 0;
+	}
+
+
+
+	// too big, return 0x800000000
+	if(exp > exp_max_norm){
+		return 0x80000000u;
+	}
+
+	val = (1<<23) | frac;
+
+	e_pow_2 = exp - exp_min_norm;
+
+	if(e_pow_2 <= 23){
+
+	val = val >> (23 - e_pow_2);
+
+
+	}
+	else{
+		val = val << (e_pow_2 - 23);
+	}
+
+	// sign bit on
+	if(sign){
+		
+		return (val > 0x80000000u) ? 0x80000000u: -val;
+
+	}
+
+	else{
+	
+		return (val > (0x80000000 - 1)) ? 0x80000000: val;
+	}
+
+}
+
 
 unsigned floatNegate(unsigned uf) {
 
